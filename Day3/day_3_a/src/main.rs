@@ -20,13 +20,13 @@ fn main() {
             sack2.insert(item);
         }
 
-        for item in sack1.into_iter() {
-            if sack2.contains(&item) {
-                if item >= 'a' && item <= 'z' {
-                    score += item as u32 - 'a' as u32 + 1;
-                } else {
-                    score += item as u32 - 'A' as u32 + 1 + 26;
-                }
+        let common: HashSet<char> = sack1.intersection(&sack2).into_iter().cloned().collect();
+
+        for item in common.into_iter() {
+            if item >= 'a' && item <= 'z' {
+                score += item as u32 - 'a' as u32 + 1;
+            } else {
+                score += item as u32 - 'A' as u32 + 1 + 26;
             }
         }
 
