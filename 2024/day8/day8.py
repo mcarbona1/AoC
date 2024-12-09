@@ -3,9 +3,6 @@
 from collections import defaultdict
 import typing
 
-OPS: list[str] = ["+", "*"]
-OPS_2: list[str] = ["||"]
-
 def read_input(input: typing.TextIO) -> tuple[dict[str, list[tuple[int, int]]], int, int]:
     nodes: dict[str, list[tuple[int, int]]] = defaultdict(list)
 
