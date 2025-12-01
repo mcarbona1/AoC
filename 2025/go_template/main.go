@@ -7,14 +7,12 @@ import (
 	"github.com/akamensky/argparse"
 )
 
-func part1(input string) bool {
+func part1(input string) {
 	fmt.Printf("read file content:\n%s\n", input)
-	return false
 }
 
-func part2(input string) bool {
+func part2(input string) {
 	fmt.Printf("read file content:\n%s\n", input)
-	return false
 }
 
 func handle_cases(pt1 bool, pt2 bool, files []string) {
@@ -24,15 +22,20 @@ func handle_cases(pt1 bool, pt2 bool, files []string) {
 			fmt.Printf("Failed to read file: %s", file)
 		}
 
+		fmt.Printf("******* %s *******\n", file)
+
 		if pt1 {
+			fmt.Print("Part 1 ")
 			part1(string(content))
 		}
 
 		if pt2 {
+			fmt.Print("Part 2 ")
 			part2(string(content))
 		}
-	}
 
+		fmt.Printf("***** %s end *****\n\n", file)
+	}
 }
 
 func main() {
