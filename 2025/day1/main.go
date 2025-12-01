@@ -3,18 +3,71 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/akamensky/argparse"
 )
 
-func part1(input string) bool {
-	fmt.Printf("read file content:\n%s\n", input)
-	return false
+func part1(input string) {
+	location := 50
+	count := 0
+	for _, line := range strings.Split(input, "\n") {
+		dir := line[0]
+		amount, err := strconv.Atoi(line[1:])
+		if err != nil {
+			fmt.Printf("Failed to parse int from line: %s\n", line)
+			return
+		}
+
+		if dir == 'L' {
+			location = (location - amount) % 100
+		} else if dir == 'R' {
+			location = (location + amount) % 100
+		}
+
+		if location == 0 {
+			count += 1
+		}
+
+	}
+
+	fmt.Printf("Password: %d\n", count)
 }
 
-func part2(input string) bool {
-	fmt.Printf("read file content:\n%s\n", input)
-	return false
+func part2(input string) {
+	location := 50
+	count := 0
+	for line := range strings.SplitSeq(input, "\n") {
+		dir := line[0]
+		amount, err := strconv.Atoi(line[1:])
+		if err != nil {
+			fmt.Printf("Failed to parse int from line: %s\n", line)
+			return
+		}
+
+		if dir == 'L' {
+			if (location - amount) <= 0 {
+				clicks := (location - amount) / -100
+				if location != 0 {
+					clicks += 1
+				}
+				count += clicks
+			}
+
+			// Weird work around to compensate for the fact that in go, modulo of a negative number will give a negative number
+			location = ((location-amount)%100 + 100) % 100
+
+		} else if dir == 'R' {
+			clicks := (location + amount) / 100
+			location = (location + amount) % 100
+
+			count += clicks
+		}
+
+	}
+
+	fmt.Printf("Password: %d\n", count)
 }
 
 func handle_cases(pt1 bool, pt2 bool, files []string) {
@@ -24,15 +77,20 @@ func handle_cases(pt1 bool, pt2 bool, files []string) {
 			fmt.Printf("Failed to read file: %s", file)
 		}
 
+		fmt.Printf("******* %s *******\n", file)
+
 		if pt1 {
+			fmt.Print("Part 1 ")
 			part1(string(content))
 		}
 
 		if pt2 {
+			fmt.Print("Part 2 ")
 			part2(string(content))
 		}
-	}
 
+		fmt.Printf("***** %s end *****\n\n", file)
+	}
 }
 
 func main() {
