@@ -1,2 +1,2 @@
-# AoC2022
+# AoC
 My Repository for Advent of Code
