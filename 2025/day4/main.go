@@ -8,7 +8,7 @@ import (
 	"github.com/akamensky/argparse"
 )
 
-func checkSquare(mapping []string, row int, col int, height int, width int) bool {
+func checkSquare(mapping []string, row int, col int, height int, width int, gen byte) bool {
 	count := 0
 
 	for i := row - 1; i <= row+1; i += 1 {
@@ -17,7 +17,7 @@ func checkSquare(mapping []string, row int, col int, height int, width int) bool
 				continue
 			} else if i < 0 || j < 0 || i >= height || j >= width {
 				continue
-			} else if mapping[i][j] == '@' || mapping[i][j] == 'x' {
+			} else if mapping[i][j] == '@' || mapping[i][j] == gen {
 				count += 1
 			}
 		}
@@ -39,7 +39,8 @@ func part1(input string) {
 				continue
 			}
 
-			if checkSquare(mapping, i, j, height, width) {
+			// The generation doesn't matter here as long as it's not '.'
+			if checkSquare(mapping, i, j, height, width, '@') {
 				count += 1
 			}
 		}
@@ -49,6 +50,8 @@ func part1(input string) {
 }
 
 func part2(input string) {
+	var generation byte = 1
+
 	count := 0
 	mapping := strings.Split(input, "\n")
 	removed := true
@@ -57,31 +60,31 @@ func part2(input string) {
 	width := len(mapping[0])
 
 	for removed {
+		if generation == '.' || generation == '@' {
+			generation += 1
+
+			continue
+		}
+
 		removed = false
+
 		for i, row := range mapping {
 			for j, char := range row {
 				if char != '@' {
 					continue
 				}
 
-				if checkSquare(mapping, i, j, height, width) {
+				if checkSquare(mapping, i, j, height, width, generation) {
 					count += 1
 					removed = true
 
-					// Mark roll for deletion.
-					mapping[i] = mapping[i][:j] + "x" + mapping[i][j+1:]
+					// Mark roll as deleted for future generations. This technically does have a maximum limit for generations but for this sample size it works.
+					mapping[i] = mapping[i][:j] + fmt.Sprintf("%c", generation) + mapping[i][j+1:]
 				}
 			}
 		}
 
-		// Remove deleted rolls.
-		for i := range height {
-			for j := range width {
-				if mapping[i][j] == 'x' {
-					mapping[i] = mapping[i][:j] + "." + mapping[i][j+1:]
-				}
-			}
-		}
+		generation += 1
 	}
 
 	fmt.Printf("Accessible rolls: %d\n", count)
